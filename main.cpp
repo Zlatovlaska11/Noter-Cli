@@ -2,18 +2,14 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
-#include <iterator>
-#include <ostream>
 #include <string>
 
 class Noter {
 public:
-  void WriteNote(std::string text, std::string path) {
+  void WriteNote(std::string text) {
     FILE *file;
-    const char *PathChar = path.c_str();
     const char *TextChar = text.c_str();
-    file = std::fopen(PathChar, "a");
+    file = std::fopen("notes.md", "a"); // replace text.txt with note.md
 
     std::fputs("_", file);
     std::fputs(TextChar, file);
@@ -22,24 +18,34 @@ public:
     std::fclose(file);
   }
 
-  void DisplayNotes(std::string path) {
-    std::string command = "glow" + path;
-    system("cat text.txt"); // replace with glow file.md command for good
-                            // markdown displaying
+  void DisplayNotes() {
+    std::string comand = "glow notes.md";
+
+    const char *comm = comand.c_str();
+
+    system(comm); // replace with glow file.md command for good
+                  // markdown displaying
   }
 };
 
 int main(int argc, char *argv[]) {
 
   // std::cout << argv[2]; // used to get argument while calling the file
+  std::string text = "";
+
+  for (int i = 2; i < argc; i++) {
+    text += argv[i];
+    if (i != argc - 1) {
+      text += " ";
+    }
+  }
+
   Noter note;
-  if (strcmp(argv[1], "-d") == 0) {
-    // Display mode to display notes
-    note.DisplayNotes(argv[3]);
+  if (strcmp(argv[1], "-d") == 0) { // Display mode to display notes
+    note.DisplayNotes();
 
-  } else if (strcmp(argv[1], "-wi") == 0) {
-
-    note.WriteNote(argv[2], argv[3]);
+  } else if (strcmp(argv[1], "-w") == 0) { // write
+    note.WriteNote(text);
   }
 
   return 0;
